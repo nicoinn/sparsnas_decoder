@@ -10,7 +10,7 @@ COPY main.cpp /build/
 
 RUN cd /build && cmake ./ && make 
 
-FROM alpine
+FROM scratch
 
 COPY --from=BUILD_ENV /build/sparsnas_decode /usr/bin/
 
