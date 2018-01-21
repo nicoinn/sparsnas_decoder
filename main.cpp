@@ -1,8 +1,8 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <math.h>
+#include <cstdint>
+#include <cstdio>
+#include <cmath>
 #include <complex>
-
+#include <cstring>
 
 // This is the number of pulse per kWh consumed of your elecricity meter.
 // In Sweden at least, the standard seems to be 1 pulse per Wh, i.e. 1000 pulses per kWh

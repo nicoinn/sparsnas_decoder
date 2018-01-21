@@ -1,0 +1,17 @@
+# This is the number of pulse per kWh consumed of your elecricity meter.
+# In Sweden at least, the standard seems to be 1 pulse per Wh, i.e. 1000 pulses per kWh
+#SPARSNAS_PULSES_PER_KWH=1000
+
+# These are the last 6 digits from the serial number of the sender.
+# The serial number is located under the battery.
+# The full serial number looks like "400 666 111"
+SPARSNAS_SENSOR_ID=42
+
+
+# It seems like different RTL-SDR tune to slightly different frequencies
+# Or I'm not really sure what's up, but the 0 and 1 frequencies differ
+# between different RTL-SDR and/or sparsnäs. You can have a look at the
+# signal in a wave file editor and you can measure the wavelengths of the
+# sine waves and put in appropriate values here.
+SPARSNAS_FREQ_MIN=67500 
+SPARSNAS_FREQ_MAX=105000
