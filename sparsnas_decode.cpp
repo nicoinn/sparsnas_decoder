@@ -390,19 +390,20 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if (!testing) {
+        if (get_env_int("SPARSNAS_FREQ_MIN", &tmp))
+            frequencies[0] = tmp;
+        else {
+            fprintf(stderr, "SPARSNAS_FREQ_MIN not defined or incorrect. Aborting!\n");
+            return 1;
+        }
 
-    if (get_env_int("SPARSNAS_FREQ_MIN",&tmp))
-        frequencies[0] = tmp;
-    else {
-        fprintf(stderr, "SPARSNAS_FREQ_MIN not defined or incorrect. Aborting!\n");
-        return 1;
-    }
-
-    if (get_env_int("SPARSNAS_FREQ_MAX",&tmp))
-        frequencies[1] = tmp;
-    else {
-        fprintf(stderr, "SPARSNAS_FREQ_MAX not defined or incorrect. Aborting!\n");
-        return 1;
+        if (get_env_int("SPARSNAS_FREQ_MAX", &tmp))
+            frequencies[1] = tmp;
+        else {
+            fprintf(stderr, "SPARSNAS_FREQ_MAX not defined or incorrect. Aborting!\n");
+            return 1;
+        }
     }
 
     FILE *logfile;
