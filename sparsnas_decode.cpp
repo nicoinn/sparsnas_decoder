@@ -25,7 +25,6 @@ float frequencies[2]; //={67500.0,105000.0};
 
 
 
-FILE *outfile;
 int testing;
 
 
@@ -198,13 +197,8 @@ public:
             m += sprintf(m,",crc_err:%d}\n",crc_err);
 
 
-            if (!testing) {
+            if (!testing)
                 fprintf(stderr, "%s", mesg);
-                if (outfile) {
-                    fprintf(outfile, "%s", mesg);
-                    fflush(outfile);
-                }
-            }
         }
         bits_ = 0;
     }
