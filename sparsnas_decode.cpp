@@ -186,7 +186,7 @@ public:
                 int battery = dec[17];
                 float watt =  (float)((3600000 / PULSES_PER_KWH) * 1024) / (effect);
 
-                m += sprintf(m,"{time:%ld,sensorID:%d,seqID:%d,power:%f,pulse:%d,batt:%d,FreqErr:%.2f",mytime,SENSOR_ID,seq, watt, pulse, battery, freq);
+                m += sprintf(m,"{\"time\":%ld,\"sensorID\":%d,\"seqID\":%d,\"power\":%f,\"pulse\":%d,\"batt\":%d,\"FreqErr\":%.2f",mytime,SENSOR_ID,seq, watt, pulse, battery, freq);
 
                 if (testing && crc == packet_crc) {
                     error_sum += fabs(freq);
@@ -196,11 +196,11 @@ public:
 
             int crc_err;
             if (crc == packet_crc) crc_err=1; else crc_err=0;
-            m += sprintf(m,",crc_err:%d}\n",crc_err);
+            m += sprintf(m,",\"crc_err\":%d}\n",crc_err);
 
 
             if (!testing)
-                fprintf(stderr, "%s", mesg);
+                fprintf(stdout, "%s", mesg);
         }
         bits_ = 0;
     }
