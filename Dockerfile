@@ -1,17 +1,52 @@
-FROM alpine as BUILD_ENV
+
+#Compile RTL_SDR --- based on https://github.com/bemasher/rtl-sdr
+
+FROM alpine as RTLSDR_BUILD_ENV
+
+RUN apk add --no-cache musl-dev gcc make cmake pkgconf git libusb-dev
+
+WORKDIR /usr/local/
+RUN git clone git://git.osmocom.org/rtl-sdr.git && cd rtl-sdr && git checkout tags/0.6.0
+
+RUN mkdir /usr/local/rtl-sdr/build
+WORKDIR /usr/local/rtl-sdr/build
+RUN cmake ../ -DDETACH_KERNEL_DRIVER=ON -DCMAKE_C_FLAGS="-static-libstdc++"
+RUN make
+RUN make install
+
+
+
+
+#Compile Sparnas_decoder
+FROM alpine as SPARSNAS_BUILD_ENV
 
 RUN apk add --update --no-cache \
     g++ \
-    cmake \
     make
 
-COPY CMakeLists.txt /build/
-COPY main.cpp /build/
+COPY Makefile /build/
+COPY sparsnas_decode.cpp /build/
 
-RUN cd /build && cmake ./ && make 
+WORKDIR /build
+RUN make
 
-FROM scratch
 
-COPY --from=BUILD_ENV /build/sparsnas_decode /usr/bin/
 
-ENTRYPOINT ["/usr/bin/sparsnas_decode"]
+
+
+
+
+
+FROM alpine
+
+RUN apk add --no-cache libusb
+
+COPY --from=RTLSDR_BUILD_ENV /usr/local/rtl-sdr/build/src/rtl_sdr /usr/bin/
+COPY --from=RTLSDR_BUILD_ENV /usr/local/rtl-sdr/build/src/librtlsdr.so.0 /usr/local/lib/
+COPY --from=SPARSNAS_BUILD_ENV /build/sparsnas_decode /usr/bin/
+COPY run_sparsnas.sh /usr/bin
+
+RUN chmod 755 /usr/bin/sparsnas_decode && chmod 755 /usr/bin/rtl_sdr
+
+
+ENTRYPOINT ["/usr/bin/run_sparsnas.sh"]

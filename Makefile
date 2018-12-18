@@ -1,5 +1,5 @@
 all:
-	g++ -o sparsnas_decode -O3 sparsnas_decode.cpp
+	g++ -o sparsnas_decode -O3 -static sparsnas_decode.cpp
 
 clean: 
 	rm sparsnas_decode
