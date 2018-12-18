@@ -2,10 +2,10 @@
 #include <cstdio>
 #include <cmath>
 #include <complex>
-#include <cstring>
 
 // This is the number of pulse per kWh consumed of your elecricity meter.
 // In Sweden at least, the standard seems to be 1 pulse per Wh, i.e. 1000 pulses per kWh
+// This value can be overriden by setting a different value to environmental variable SPARSNAS_PULSES_PER_KWH
 int PULSES_PER_KWH=1000;
 
 
@@ -156,7 +156,6 @@ public:
                          timeinfo->tm_hour,
                          timeinfo->tm_min,
                          timeinfo->tm_sec);
-
             */
 
             uint8_t dec[32];
@@ -216,7 +215,7 @@ public:
     uint32_t bits_;
 };
 
-void run_for_frequencies(FILE *f, FILE *logfile, float F1, float F2) {
+void run_for_frequencies(FILE *f, float F1, float F2) {
     uint8_t buf[16384];
     SignalDetector sd;
 
@@ -227,27 +226,27 @@ void run_for_frequencies(FILE *f, FILE *logfile, float F1, float F2) {
 
     int hi = 0;
 
-    float S = 1024000.0;
+    float S = float(1024000.0);
     int j = 0;
 
     bool last_signal = false;
     int last_sigtime = 0;
 
-    const float PERFECT_PULSE_LEN = 26.6666666f * S / 1024000.0;
-    const int MIN_PULSE_LEN = 12 * S / 1024000.0;
-    const int MAX_PULSE_LEN = 42 * S / 1024000.0;
+    const float PERFECT_PULSE_LEN = 26.6666666f; //originally (26.6666666f * S / 1024000.0)
+    const int MIN_PULSE_LEN = 12;                //originally (12 * S / 1024000.0)
+    const int MAX_PULSE_LEN = 42;                //originally (42 * S / 1024000.0)
     float avg_err = 0;
 
     Complex c1 = {1, 0};
     Complex c2 = {1, 0};
 
-    float f1 = 2 * M_PI * F1 / S;
+    float f1 = float(2 * M_PI * F1 / S);
     Complex rot1 = Complex::Make(cosf(f1), sinf(f1));
-    float f2 = 2 * M_PI * F2 / S;
+    float f2 = float(2 * M_PI * F2 / S);
     Complex rot2 = Complex::Make(cosf(f2), sinf(f2));
 
     for (;;) {
-        int elems = fread(buf, 2, 8192, f);
+        int elems = int(fread(buf, 2, 8192, f));
         if (elems <= 0)
             break;
 
@@ -278,8 +277,6 @@ void run_for_frequencies(FILE *f, FILE *logfile, float F1, float F2) {
 
             bool signal = sum1.real * sum1.real + sum1.imag * sum1.imag >
                           sum2.real * sum2.real + sum2.imag * sum2.imag;
-
-            if (logfile) {short x = signal ? 10000 : -10000; fwrite(&x, 2, 1, logfile); }
 
             if (signal != last_signal) {
                 int pulse_len = (unsigned)j - last_sigtime;
@@ -327,7 +324,7 @@ int run_calibration(FILE *f){
 
             error_sum = 0;
             error_sum_count = 0;
-            run_for_frequencies(f, NULL, f1, f1 + 40000.0f);
+            run_for_frequencies(f, f1, f1 + 40000.0f);
 
             if (error_sum_count != 0) {
                 float error = error_sum / error_sum_count;
@@ -407,16 +404,10 @@ int main(int argc, char **argv)
         }
     }
 
-    FILE *logfile;
-    if (const char *env_p = std::getenv("SPARSNAS_LOG"))
-        logfile=fopen(env_p,"a");
-    else
-        logfile = NULL;
-
 
     //Run the main program
     if (!testing)
-        run_for_frequencies(f, logfile, frequencies[0], frequencies[1]);
+        run_for_frequencies(f, frequencies[0], frequencies[1]);
     else
         run_calibration(f);
 
