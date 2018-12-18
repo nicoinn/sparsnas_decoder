@@ -20,7 +20,7 @@ int  SENSOR_ID;
 // signal in a wave file editor and you can measure the wavelengths of the
 // sine waves and put in appropriate values here.
 //#define FREQUENCIES {12500.0,50000.0}
-float frequencies[2]; //={67500.0,105000.0};
+//={67500.0,105000.0};
 
 
 
@@ -37,6 +37,7 @@ struct ComplexBase {
         ComplexBase<T> r = {a, b};
         return r;
     }
+
     friend ComplexBase<T> operator*(ComplexBase<T> a, T b) {
         ComplexBase<T> r = {a.real * b, a.imag * b};
         return r;
@@ -381,6 +382,8 @@ int main(int argc, char **argv)
         fprintf(stderr, "SPARSNAS_SENSOR_ID not defined or incorrect. Aborting!\n");
         return 1;
     }
+
+    float frequencies[2];
 
     if (!testing) {
         if (get_env_int("SPARSNAS_FREQ_MIN", &tmp))
