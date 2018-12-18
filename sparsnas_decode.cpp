@@ -349,7 +349,8 @@ int run_calibration(FILE *f){
         step /= 10.0f;
     } while (step >= 10.0f);
 
-    fprintf(stderr, "#define FREQUENCIES {%f, %f}\n", best_f1, best_f1 + 40000.0f);
+    fprintf(stderr, "Found frequency range {%f,%f}\n", best_f1, best_f1 + 40000.0f);
+    fprintf(stdout, "export SPARSNAS_FREQ_MIN=%f\n export SPARSNAS_FREQ_MAX=%f\n", best_f1, best_f1 + 40000.0f);
     return 0;
 }
 
