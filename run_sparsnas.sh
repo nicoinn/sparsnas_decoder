@@ -34,4 +34,4 @@ then
 	echo "SPARNAS_FREQ_MAX " $SPARSNAS_FREQ_MAX
 fi
 
-rtl_sdr -f 868000000 -s 1024000 -g 40 - | sparsnas_decode
+rtl_sdr -f 868000000 -s 1024000 -g 40 - | sparsnas_decode | python2 /sensor_data_forwarder/sparsnas_forwarder.py 

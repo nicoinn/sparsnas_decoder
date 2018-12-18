@@ -199,8 +199,10 @@ public:
             m += sprintf(m,",\"crc_err\":%d}\n",crc_err);
 
 
-            if (!testing)
+            if (!testing) {
                 fprintf(stdout, "%s", mesg);
+	    	fflush(stdout);
+	    }
         }
         bits_ = 0;
     }

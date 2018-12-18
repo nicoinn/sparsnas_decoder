@@ -1,0 +1,3 @@
+[submodule "sensor_data_forwarder"]
+	path = sensor_data_forwarder
+	url = git@github.com:nicoinn/sensor_data_forwarder.git
